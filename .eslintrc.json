@@ -16,12 +16,26 @@
   ],
   "globals": { "BigInt": true, "console": true, "WebAssembly": true },
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "Function": false, // allow for generics
+          "object": false // allow for generics
+        }
+      }
+    ],
+    "@typescript-eszlint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": 0, // 0 = off, 1 = warn, 2 = error
+    "@typescript-eslint/explicit-module-boundary-types": 0,
     "eslint-comments/disable-enable-pair": [
       "error",
       { "allowWholeFile": true }
     ],
     "eslint-comments/no-unused-disable": "error",
+    "functional/no-class": 0, // 0 = off, 1 = warn, 2 = error
+    "functional/no-this-expression": 0, // 0 = off, 1 = warn, 2 = error
+    "functional/prefer-readonly-type": 0, // 0 = off, 1 = warn, 2 = error
     "import/order": [
       "error",
       { "newlines-between": "always", "alphabetize": { "order": "asc" } }
