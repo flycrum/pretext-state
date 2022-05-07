@@ -17,12 +17,12 @@ const test = anyTest as TestInterface<Pretext<{ firstName: string }>>;
 
 test.beforeEach((t) => {
   // eslint-disable-next-line functional/immutable-data
-  t.context = createPretext().setStateConfig(() => ({
+  t.context = createPretext().initState(() => ({
     firstName: 'john',
   }));
 });
 
-test('call setStateConfig(() => state) and ensure types and values are correct [J8G7V]', (t) => {
+test('call initState(() => state) and ensure types and values are correct [J8G7V]', (t) => {
   const pretext = t.context;
   // typings (while these can't truly be tested, running test suite will fail if typings break)
   isNotAny(pretext);
@@ -34,8 +34,8 @@ test('call setStateConfig(() => state) and ensure types and values are correct [
   t.is(pretext.configState.firstName, 'john');
 });
 
-test('call setStateConfig(state) and ensure types and values are correct [ZG13U]', (t) => {
-  const pretext = createPretext().setStateConfig({
+test('call initState(state) and ensure types and values are correct [ZG13U]', (t) => {
+  const pretext = createPretext().initState({
     firstName: 'jane',
   });
 
@@ -49,10 +49,10 @@ test('call setStateConfig(state) and ensure types and values are correct [ZG13U]
   t.is(pretext.configState.firstName, 'jane');
 });
 
-// test('setStateConfig re-initializes types and values correctly [EN5CW]', (t) => {
+// test('initState re-initializes types and values correctly [EN5CW]', (t) => {
 //   const pretext = t.context;
 //
-//   pretext.setStateConfig(() => ({
+//   pretext.initState(() => ({
 //     firstName: 'jane',
 //     age: 30,
 //   }));

@@ -15,9 +15,9 @@ export class Pretext<CpPretextConfigState extends object> {
    * Sets the internal state configuration.
    * Note: this does not
    * @param state A configuration object of properties representing the internal pretext state default.
-   * @return The pretext shell so it can be chainable.
+   * @return The pretext shell enabling chaining.
    */
-  setStateConfig<State extends CpPretextConfigState>(state: State | (() => State)) {
+  initState<State extends CpPretextConfigState>(state: State | (() => State)) {
     this.configState = (isFunction(state) ? state() : state) as any as CpPretextConfigState;
     return this as any as Pretext<State>;
   }
