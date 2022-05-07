@@ -1,6 +1,6 @@
 {
   "name": "pretext-state",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a self-contained state management alternative",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
