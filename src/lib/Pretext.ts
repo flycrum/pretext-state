@@ -6,14 +6,20 @@ import { isFunction } from '../helpers/isFunction';
  * The internals of the pretext engine.
  * Why is this a class? There are certain typing patterns that are easier and cleaner to achieve this way.
  */
-export class Pretext<CpPretextConfigState extends object> {
+export class Pretext<CpConfigName extends string, CpPretextConfigState extends object> {
+  /**
+   * The pretext name used for identification, dev tools, etc.
+   */
+  _configName: CpConfigName;
+
   /**
    * The internal configuration state.
    * Each prop within this state object will be wrapped in a render-friendly and reactive atom.
    */
   _configState: CpPretextConfigState = {} as CpPretextConfigState;
 
-  constructor(configState?: CpPretextConfigState) {
+  constructor(configName: CpConfigName, configState?: CpPretextConfigState) {
+    this._configName = configName;
     this._configState = configState ?? this._configState;
   }
 
@@ -24,7 +30,7 @@ export class Pretext<CpPretextConfigState extends object> {
    */
   configState<State extends CpPretextConfigState>(state: State | (() => State)) {
     this._configState = (isFunction(state) ? state() : state) as any as CpPretextConfigState;
-    return this as any as Pretext<State>;
+    return this as any as Pretext<CpConfigName, State>;
   }
 
   /**
@@ -38,6 +44,6 @@ export class Pretext<CpPretextConfigState extends object> {
       ...(isFunction(state) ? state() : state),
     };
 
-    return this as any as Pretext<Merge<CpPretextConfigState, State>>;
+    return this as any as Pretext<CpConfigName, Merge<CpPretextConfigState, State>>;
   }
 }

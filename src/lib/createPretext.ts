@@ -4,8 +4,12 @@ import { Pretext } from './Pretext';
 
 /**
  * Creates a chainable instance of Pretext.
- * @param configState
+ * @param configName The pretext name used for identification, dev tools, etc.
+ * @param configState The state data.
  */
-export function createPretext<CpConfigState extends object>(configState?: CpConfigState | (() => CpConfigState)) {
-  return new Pretext<CpConfigState>(isFunction(configState) ? configState() : configState);
+export function createPretext<CpConfigName extends string, CpConfigState extends object>(
+  configName: CpConfigName,
+  configState?: CpConfigState | (() => CpConfigState)
+) {
+  return new Pretext<CpConfigName, CpConfigState>(configName, isFunction(configState) ? configState() : configState);
 }
