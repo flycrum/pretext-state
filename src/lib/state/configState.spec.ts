@@ -1,16 +1,15 @@
 import anyTest, { TestInterface } from 'ava';
 import { expectType } from 'tsd';
 
-import { isNotAny } from '../helpers/isNotAny';
+import { isNotAny } from '../../helpers/isNotAny';
 
-import { Pretext } from './Pretext';
-import { createPretext } from './createPretext';
+import { Pretext } from '../Pretext';
+import { createPretext } from '../createPretext';
 
-const test = anyTest as TestInterface<Pretext<{ firstName: string }>>;
+const test = anyTest as TestInterface<Pretext<'42OBA', { firstName: string }, object>>;
 
 test.beforeEach((t) => {
-  // eslint-disable-next-line functional/immutable-data
-  t.context = createPretext().configState(() => ({
+  t.context = createPretext('42OBA').configState(() => ({
     firstName: 'john',
   }));
 });
@@ -28,7 +27,7 @@ test('call configState(() => state) and ensure internal _config types and values
 });
 
 test('call configState(state) and ensure internal _config types and values are set correctly [ZG13U]', (t) => {
-  const pretext = createPretext().configState({
+  const pretext = createPretext('ZG13U').configState({
     firstName: 'jane',
   });
 

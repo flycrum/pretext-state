@@ -1,22 +1,26 @@
 import anyTest, { TestInterface } from 'ava';
 import { expectType } from 'tsd';
 
-import { isNotAny } from '../helpers/isNotAny';
+import { isNotAny } from '../../helpers/isNotAny';
 
-import { Pretext } from './Pretext';
-import { createPretext } from './createPretext';
+import { createPretext } from '../createPretext';
 
-const test = anyTest as TestInterface<Pretext<{ firstName: string }>>;
+function generatePretextFactory() {
+  return createPretext('F8P5E', {
+    firstName: 'jimmy',
+  });
+}
+
+const test = anyTest as TestInterface<ReturnType<typeof generatePretextFactory>>;
 
 test.beforeEach((t) => {
-  // eslint-disable-next-line functional/immutable-data
-  t.context = createPretext().configState(() => ({
+  t.context = createPretext('F8P5E').configState(() => ({
     firstName: 'jimmy',
   }));
 });
 
-test('append more state via configPartialState and ensure internal _config types and values are set correctly [EN5CW]', (t) => {
-  const pretext = t.context.configPartialState({
+test('append more state via configStatePartial and ensure internal _config types and values are set correctly [EN5CW]', (t) => {
+  const pretext = t.context.configStatePartial({
     age: 99,
   });
 
