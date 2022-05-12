@@ -1,0 +1,8 @@
+# package.json is formatted by package managers, so we ignore it here
+build/
+node_modules/
+internals/generators/
+internals/scripts/
+package-lock.json
+yarn.lock
+package.json
