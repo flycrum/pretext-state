@@ -14,6 +14,7 @@
     "@typescript-eslint/parser": "5.6.0",
     "eslint": "7.32.0",
     "eslint-config-react-app": "^7.0.1",
+    "pretext-state": "link:../../../pretext-state",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
