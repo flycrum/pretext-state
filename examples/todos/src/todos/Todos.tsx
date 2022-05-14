@@ -6,6 +6,10 @@ const todosPretext = createPretext('todos', {
 });
 
 export function Todos() {
+  console.log('_stateAtoms.firstName', todosPretext._stateAtoms.firstName);
+  console.log('fuck', todosPretext.fuck);
+  const names = todosPretext.helpers.usePretextValue(todosPretext.fuck);
+
   return (
     <div>
       <h1>Todos</h1>
