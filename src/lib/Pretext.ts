@@ -1,4 +1,3 @@
-import { atom, RecoilState, useRecoilValue } from 'recoil';
 import { Merge } from 'ts-toolbelt/out/Object/Merge';
 
 import { isFunction } from '../helpers/isFunction';
@@ -36,19 +35,7 @@ export class Pretext<
   /**
    *
    */
-  _stateAtoms: { [Key in keyof CpPretextConfigState]: RecoilState<CpPretextConfigState[Key]> } = {} as any;
-
-  fuck = atom({
-    key: 'zebra',
-    default: 'zebra',
-  });
-
-  helpers = {
-    usePretextValue(yoyo: any) {
-      console.log('mewo');
-      useRecoilValue.apply(this, yoyo);
-    },
-  };
+  // _stateAtoms: { [Key in keyof CpPretextConfigState]: RecoilState<CpPretextConfigState[Key]> } = {} as any;
 
   /**
    * Constructor.
@@ -101,10 +88,10 @@ export class Pretext<
    * @return The pretext shell enabling chaining.
    */
   configState<CpState extends CpPretextConfigState>(configStateOrFn: CpState | (() => CpState)) {
-    const { configState, stateAtoms } = processStateConfig(configStateOrFn);
+    const { configState } = processStateConfig(configStateOrFn);
 
     this._configState = configState;
-    this._stateAtoms = stateAtoms as any;
+    // this._stateAtoms = stateAtoms as any;
 
     // return re-typed Pretext (with the latest config update) for chaining
     return this as any as Pretext<CpConfigName, CpState, CpPretextConfigReducers>;
