@@ -3,7 +3,6 @@ import { expectType } from 'tsd';
 
 import { expectTypeParam0, expectTypeParam1 } from '../../helpers/expectTypes';
 import { isNotAny } from '../../helpers/isNotAny';
-
 import { createPretext } from '../createPretext';
 
 function generatePretextFactory() {
