@@ -12,7 +12,7 @@ import { PretextConfigReducersT } from './reducers/configReducerTypes';
 export class Pretext<
   CpConfigName extends string,
   CpPretextConfigState extends object,
-  CpPretextConfigReducers extends object
+  CpPretextConfigReducers extends PretextConfigReducersT<CpPretextConfigState>
 > {
   /**
    * The pretext name used for identification, dev tools, etc.
@@ -39,8 +39,8 @@ export class Pretext<
    */
   constructor(configName: CpConfigName, configState?: CpPretextConfigState, configReducer?: CpPretextConfigReducers) {
     this._configName = configName;
-    this._configState = configState ?? this._configState;
-    this._configReducers = configReducer ?? this._configReducers;
+    this.configState(configState ?? this._configState);
+    this.configReducers(configReducer ?? this._configReducers);
   }
 
   /**
@@ -93,13 +93,17 @@ export class Pretext<
    * @param state An object of properties representing part of the internal pretext state.
    * @return The pretext shell enabling chaining.
    */
-  configStatePartial<CpState extends object>(state: CpState | (() => CpState)) {
-    this._configState = {
-      ...this._configState,
-      ...(isFunction(state) ? state() : state),
-    };
-
-    // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<CpConfigName, Merge<CpPretextConfigState, CpState>, CpPretextConfigReducers>;
-  }
+  // configStatePartial<CpState extends object>(state: CpState | (() => CpState)) {
+  //   this._configState = {
+  //     ...this._configState,
+  //     ...(isFunction(state) ? state() : state),
+  //   };
+  //
+  //   type MergedStateT = Merge<CpPretextConfigState, CpState>;
+  //   // todo - typings off...almost need to remap reducer records for new, merged state
+  //   type ReducersT = Merge<CpPretextConfigReducers, PretextConfigReducersT<MergedStateT>>;
+  //
+  //   // return re-typed Pretext (with the latest config update) for chaining
+  //   return this as any as Pretext<CpConfigName, MergedStateT, ReducersT>;
+  // }
 }
