@@ -4,7 +4,7 @@ import { isFunction } from '../helpers/isFunction';
 
 import type { PretextAtomI } from './atoms/pretextAtomTypes';
 import type { PretextConfigReducersT } from './reducers/configReducerTypes';
-import { processStateConfig } from './state/processStateConfig';
+import { processStateOrFnConfig } from './state/processStateOrFnConfig';
 
 /**
  * The shell of the pretext engine.
@@ -89,7 +89,7 @@ export class Pretext<
    * @return The pretext shell enabling chaining.
    */
   configState<CpState extends CpPretextConfigState>(configStateOrFn: CpState | (() => CpState)) {
-    const { configState, stateAtoms } = processStateConfig(configStateOrFn);
+    const { configState, stateAtoms } = processStateOrFnConfig(configStateOrFn);
 
     this._configState = configState;
     this._stateAtoms = stateAtoms as any;

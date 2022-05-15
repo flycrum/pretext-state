@@ -1,4 +1,4 @@
-import { isFunction } from '../helpers/isFunction';
+import { isFunction, NotFunction } from '../helpers/isFunction';
 
 import { Pretext } from './Pretext';
 import type { PretextConfigReducersT } from './reducers/configReducerTypes';
@@ -10,8 +10,11 @@ import type { PretextConfigReducersT } from './reducers/configReducerTypes';
  * @param configReducers
  */
 export function createPretext<
+  // these generic params used to enforce passed-in types and adhere to expected interface/type guardrails
   CpName extends string,
-  CpState extends object,
+  CpState extends {
+    [Key in keyof CpState]: ((refs: { state: { [Key in keyof CpState]: unknown } }) => any) | NotFunction<CpState[Key]>;
+  },
   CpReducers extends PretextConfigReducersT<CpState>
 >(configName: CpName, configState?: CpState | (() => CpState), configReducers?: CpReducers | (() => CpReducers)) {
   return new Pretext<CpName, CpState, CpReducers>(
