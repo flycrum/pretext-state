@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import type { Merge } from 'ts-toolbelt/out/Object/Merge';
 
 import { isFunction } from '../helpers/isFunction';
@@ -117,4 +116,40 @@ export class Pretext<
   //   // return re-typed Pretext (with the latest config update) for chaining
   //   return this as any as Pretext<CpConfigName, MergedStateT, ReducersT>;
   // }
+
+  /**
+   * Hook that gets the resulting pretext state, actions, etc.
+   */
+  usePretextFallout() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisScope = this;
+    const stateAtoms = this._stateAtoms;
+
+    const proxyToDetectDestructuresAndBackfillWithHooksAccessingThoseStates = new Proxy(
+      {},
+      {
+        get(_target, stateOrActionName: string) {
+          const statePropKey: keyof CpPretextConfigState = stateOrActionName as any;
+
+          // if ((actions as any)[stateOrActionName]) {
+          //   return (actions as any)[stateOrActionName];
+          // }
+
+          // call and inject the original functional scope into the hook
+          // this is so it doesn't complain about the context it's running in since this isn't a functional component
+          return stateAtoms[statePropKey].useAtomValue(thisScope);
+        },
+        set(_target, propName: string, val: any) {
+          // eslint-disable-next-line functional/no-throw-statement
+          throw new Error(
+            `Pretext.usePretextFallout: Nope, can't write to an atom here, as attempted by prop '${propName}' with value '${val}'.`
+          );
+        },
+      }
+    );
+
+    return proxyToDetectDestructuresAndBackfillWithHooksAccessingThoseStates as any as CpPretextConfigState;
+  }
 }

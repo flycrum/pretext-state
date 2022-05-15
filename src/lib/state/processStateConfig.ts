@@ -41,15 +41,11 @@ export function processStateConfig(configStateOrFn: any | (() => any)) {
     }
     // else primitive/basic/non-derived state
     else {
-      stateAtoms['firstName'] = createPretextAtom({
+      stateAtoms[statePropKey] = createPretextAtom({
         initialValue: (configState as any)[statePropKey],
       });
     }
   });
-
-  // setInterval(() => {
-  //   stateAtoms.firstName.setValue((v: string) => v + '1');
-  // }, 1000);
 
   return {
     configState,

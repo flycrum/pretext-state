@@ -12,7 +12,7 @@ export interface PretextAtomI<CpValueT = any> {
   /**
    * The underlying atom reference that powers everything reactive.
    */
-  atomRef: CpValueT;
+  atomRef: { value: CpValueT };
   /**
    * Gets the dynamically updated value (this should always reflect the current value).
    */
@@ -30,6 +30,10 @@ export interface PretextAtomI<CpValueT = any> {
    * @param value
    */
   setValue(value: CpValueT | ((previousValue: CpValueT) => CpValueT)): void;
+  /**
+   * Hook that gets its reactive value.
+   */
+  useAtomValue: (thisScope: any) => CpValueT;
   /**
    * Static value that's not intended to be used directly because it's not directly reactive or automatically updated.
    */

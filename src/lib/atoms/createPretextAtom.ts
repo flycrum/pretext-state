@@ -1,4 +1,4 @@
-import { proxy } from 'valtio';
+import { proxy, useSnapshot } from 'valtio';
 
 import { globalInternalData } from '../helpers/globalInternalData';
 
@@ -13,7 +13,7 @@ const { atomCounter } = globalInternalData;
 export function createPretextAtom(atomConfig: PretextAtomConfigI): PretextAtomI {
   const { initialValue } = atomConfig;
   type ValueT = typeof initialValue;
-  const atomRef = proxy({ value: initialValue });
+  const atomRef = proxy<ValueT>({ value: initialValue });
 
   return {
     atomRef,
@@ -33,6 +33,10 @@ export function createPretextAtom(atomConfig: PretextAtomConfigI): PretextAtomI 
       atomRef.value = value;
       // update static value
       this.valueStatic = value;
+    },
+    useAtomValue: (thisScope: any) => {
+      // inject the hook's scope into the called hook so it doesn't complain about not running in functional component
+      return (useSnapshot.apply(thisScope, [atomRef]) as typeof atomRef).value;
     },
     valueStatic: initialValue,
   };
