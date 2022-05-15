@@ -1,12 +1,12 @@
 import { isFunction } from '../../helpers/isFunction';
 import { isPropGetter } from '../../helpers/isPropGetter';
-// import { globalInternalData } from '../helpers/globalInternalData';
+import { createPretextAtom } from '../atoms/createPretextAtom';
+import type { PretextAtomI } from '../atoms/pretextAtomTypes';
 
 export function processStateConfig(configStateOrFn: any | (() => any)) {
   const configState = isFunction(configStateOrFn) ? configStateOrFn() : configStateOrFn; // as any as CpPretextConfigState;
   const statePropKeys = Object.keys(configState);
-  // const stateAtoms: { [key: string]: RecoilState<unknown> } = {};
-  // const { atomCounter } = globalInternalData;
+  const stateAtoms: { [key: string]: PretextAtomI<unknown> } = {};
 
   statePropKeys.forEach((statePropKey) => {
     // if derived/computed state (via a getter)
@@ -41,22 +41,18 @@ export function processStateConfig(configStateOrFn: any | (() => any)) {
     }
     // else primitive/basic/non-derived state
     else {
-      // console.log('🔥⚪', statePropKey, (configState as any)[statePropKey]);
-      //
-      // stateAtoms['firstName'] = atom({
-      //   // ...configState,
-      //   key: `pretext-atom-${statePropKey}-${atomCounter.uuid()}`,
-      //   default: (configState as any)[statePropKey],
-      // });
+      stateAtoms['firstName'] = createPretextAtom({
+        initialValue: (configState as any)[statePropKey],
+      });
     }
   });
 
   // setInterval(() => {
-  //   setRecoil(stateAtoms.firstName, (getRecoil(stateAtoms.firstName) as any) + 1);
+  //   stateAtoms.firstName.setValue((v: string) => v + '1');
   // }, 1000);
 
   return {
     configState,
-    // stateAtoms,
+    stateAtoms,
   };
 }

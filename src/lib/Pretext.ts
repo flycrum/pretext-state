@@ -1,8 +1,10 @@
-import { Merge } from 'ts-toolbelt/out/Object/Merge';
+import { useEffect } from 'react';
+import type { Merge } from 'ts-toolbelt/out/Object/Merge';
 
 import { isFunction } from '../helpers/isFunction';
 
-import { PretextConfigReducersT } from './reducers/configReducerTypes';
+import type { PretextAtomI } from './atoms/pretextAtomTypes';
+import type { PretextConfigReducersT } from './reducers/configReducerTypes';
 import { processStateConfig } from './state/processStateConfig';
 
 /**
@@ -33,9 +35,9 @@ export class Pretext<
   _configState: CpPretextConfigState = {} as CpPretextConfigState;
 
   /**
-   *
+   * Each state prop as represented by individual atoms.
    */
-  // _stateAtoms: { [Key in keyof CpPretextConfigState]: RecoilState<CpPretextConfigState[Key]> } = {} as any;
+  _stateAtoms: { [Key in keyof CpPretextConfigState]: PretextAtomI<CpPretextConfigState[Key]> } = {} as any;
 
   /**
    * Constructor.
@@ -88,10 +90,10 @@ export class Pretext<
    * @return The pretext shell enabling chaining.
    */
   configState<CpState extends CpPretextConfigState>(configStateOrFn: CpState | (() => CpState)) {
-    const { configState } = processStateConfig(configStateOrFn);
+    const { configState, stateAtoms } = processStateConfig(configStateOrFn);
 
     this._configState = configState;
-    // this._stateAtoms = stateAtoms as any;
+    this._stateAtoms = stateAtoms as any;
 
     // return re-typed Pretext (with the latest config update) for chaining
     return this as any as Pretext<CpConfigName, CpState, CpPretextConfigReducers>;

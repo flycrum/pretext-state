@@ -1,5 +1,4 @@
 export function getPropertyDescriptor(obj: any, prop: string): PropertyDescriptor {
-  // eslint-disable-next-line functional/no-let
   let desc: any;
 
   // eslint-disable-next-line functional/no-loop-statement

@@ -13,7 +13,6 @@ export const globalInternalData = {
      * Note: this was original to avoid hmr rerender issue with recoil and atom ids.
      */
     const timestampInitial = Date.now();
-    // eslint-disable-next-line functional/no-let
     let count = 0;
 
     return {
