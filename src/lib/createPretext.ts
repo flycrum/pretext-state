@@ -1,6 +1,6 @@
 import { isFunction, NotFunction } from '../helpers/isFunction';
 
-import { Pretext } from './Pretext';
+import { PretextC } from './PretextC';
 import type { PretextCreateZzzConfigZzzReducersT } from './reducers/reducerTypes';
 
 /**
@@ -23,7 +23,7 @@ export function createPretext<
   initialState?: PgpCreateState | (() => PgpCreateState),
   reducers?: PgpCreateReducers | (() => PgpCreateReducers)
 ) {
-  return new Pretext<PgpCreateName, PgpCreateState, PgpCreateReducers>(
+  return new PretextC<PgpCreateName, PgpCreateState, PgpCreateReducers>(
     pretextName,
     isFunction(initialState) ? initialState() : initialState,
     isFunction(reducers) ? reducers() : reducers

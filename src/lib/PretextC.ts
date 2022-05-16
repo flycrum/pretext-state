@@ -9,7 +9,7 @@ import { processStateOrFnConfig } from './state/processStateOrFnConfig';
  * Internally, the intent is to stub out methods and abstract those out to helpers.
  * Why is this a class? There are certain typing patterns that might be easier and cleaner to achieve this way.
  */
-export class Pretext<
+export class PretextC<
   PgpPretextName extends string,
   PgpPretextState extends object,
   PgpPretextReducers extends PretextConfigReducersT<PgpPretextState>
@@ -67,7 +67,7 @@ export class Pretext<
 
     // return re-typed Pretext (with the latest config update) for chaining
     // note: since state isn't changing, we don't need to do anything fancy with merging state (in contrast to adding more reducers)
-    return this as any as Pretext<
+    return this as any as PretextC<
       PgpPretextName,
       PgpPretextState,
       PretextConfigReducersT<PgpPretextState, PgpPretextReducers & PgpAddReducers>
@@ -86,7 +86,7 @@ export class Pretext<
     };
 
     // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<
+    return this as any as PretextC<
       PgpPretextName,
       PgpPretextState & PgpAddState,
       PretextConfigReducersT<PgpPretextState & PgpAddState, PgpPretextReducers>
@@ -106,7 +106,7 @@ export class Pretext<
       : reducers) as any as PgpPretextReducers;
 
     // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<
+    return this as any as PretextC<
       PgpPretextName,
       PgpPretextState,
       PretextConfigReducersT<PgpPretextState, PgpPretextReducers & PgpSetReducers>
@@ -125,7 +125,7 @@ export class Pretext<
     this._stateAtoms = stateAtoms as any;
 
     // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<PgpPretextName, PgpSetState, PgpPretextReducers>;
+    return this as any as PretextC<PgpPretextName, PgpSetState, PgpPretextReducers>;
   }
 
   /**

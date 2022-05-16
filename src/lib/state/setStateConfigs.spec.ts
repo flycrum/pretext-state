@@ -2,10 +2,10 @@ import anyTest, { TestInterface } from 'ava';
 import { expectType } from 'tsd';
 
 import { isNotAny } from '../../helpers/isNotAny';
-import { Pretext } from '../Pretext';
+import { PretextC } from '../PretextC';
 import { createPretext } from '../createPretext';
 
-const test = anyTest as TestInterface<Pretext<'42OBA', { firstName: string }, Record<string, any>>>;
+const test = anyTest as TestInterface<PretextC<'42OBA', { firstName: string }, Record<string, any>>>;
 
 test.beforeEach((t) => {
   t.context = createPretext('42OBA').setStateConfig(() => ({
