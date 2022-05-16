@@ -10,7 +10,7 @@ import { createPretext } from './createPretext';
  * https://www.random.org/strings/?num=10&len=5&digits=on&upperalpha=on&unique=on&format=html&rnd=new
  */
 
-test(`call createPretext() with empty state and ensure default types and values are set correctly [KC91I]`, (t) => {
+test('call createPretext() with empty state and ensure default types and values are set correctly [KC91I]', (t) => {
   const pretext = createPretext('KC91I');
 
   // typings (while these can't truly be tested, running test suite will fail if typings break)
@@ -25,7 +25,7 @@ test(`call createPretext() with empty state and ensure default types and values 
   t.is(Object.keys(pretext._reducersConfig).length, 0);
 });
 
-test(`call createPretext(state, () => reducers) to ensure types and values are set correctly [3DIZB]`, (t) => {
+test('call createPretext(state, () => reducers) to ensure types and values are set correctly [3DIZB]', (t) => {
   const pretext = createPretext(
     '3DIZB',
     {

@@ -35,9 +35,16 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
         return state.firstName; // return this here only as a means to test 'isNotAny' and ensure type is maintained
       },
     })
+    .addMoreStateConfigs({
+      lastName: 'smith',
+    })
+    .addMoreStateConfigs(() => ({
+      age: 0,
+    }))
     .addMoreReducerConfigs({
       clear: (state) => {
-        state.firstName = ``;
+        state.lastName = '';
+        state.firstName = '';
       },
     });
 
@@ -46,21 +53,26 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
   expectType<{ firstName: string }>(pretext._stateConfig);
   expectType<string>(pretext._stateConfig.firstName);
 
+  // pretext._reducersConfig.changeName({} as any, 'hello');
+  // pretext._reducersConfig.clear({} as any, 'hello');
+
+  type NewExpectedStateT = { firstName: string; lastName: string; age: number };
+
   isNotAny(pretext._reducersConfig);
   isNotAny(pretext._reducersConfig.changeName);
   expectType<{
-    changeName(state: { firstName: string }, newName: string): void;
-    doubleName(state: { firstName: string }): void;
-    clear(state: { firstName: string }): void;
+    changeName(state: NewExpectedStateT, newName: string): void;
+    doubleName(state: NewExpectedStateT): void;
+    clear(state: { firstName: string; lastName: string; age: number }): void;
   }>(pretext._reducersConfig);
-  expectTypeParam0<{ firstName: string }>(pretext._reducersConfig.changeName);
+  expectTypeParam0<NewExpectedStateT>(pretext._reducersConfig.changeName);
   expectTypeParam1<string>(pretext._reducersConfig.changeName);
-  expectTypeParam0<{ firstName: string }>(pretext._reducersConfig.doubleName);
+  expectTypeParam0<NewExpectedStateT>(pretext._reducersConfig.doubleName);
   // expectTypeParam1<undefined>(pretext._reducersConfig.doubleName);
-  isNotAny(pretext._reducersConfig.doubleName({ firstName: '' }));
-  expectTypeParam0<{ firstName: string }>(pretext._reducersConfig.clear);
+  isNotAny(pretext._reducersConfig.doubleName({ firstName: '', lastName: '', age: 0 }));
+  expectTypeParam0<NewExpectedStateT>(pretext._reducersConfig.clear);
   // expectTypeParam1<undefined>(pretext._reducersConfig.clear);
-  isNotAny(pretext._reducersConfig.clear({ firstName: '' }));
+  isNotAny(pretext._reducersConfig.clear({ firstName: '', lastName: '', age: 0 }));
 
   t.is(pretext._stateConfig.firstName, 'javian'); // todo this should change once wired up
   t.is(Object.keys(pretext._reducersConfig).length, 3);

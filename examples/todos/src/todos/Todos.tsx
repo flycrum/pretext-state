@@ -6,14 +6,14 @@ const todosPretext = createPretext(
   () => ({
     firstName: 'jimmy',
     count: 0,
-    // regular function has access to modified and magical 'this' context (this also requires state being wrapped in function)
-    double() {
-      return this.count * 2;
-    },
-    // arrow function doesn't have 'this' context so much rely on 'state' ref arg (which is also magical)
-    quadruple: ({ state }: { state: { [key: string]: any } }) => {
-      return state.double * 2;
-    },
+    // // regular function has access to modified and magical 'this' context (this also requires state being wrapped in function)
+    // double() {
+    //   return this.count * 2;
+    // },
+    // // arrow function doesn't have 'this' context so much rely on 'state' ref arg (which is also magical)
+    // quadruple: ({ state }: { state: { [key: string]: any } }) => {
+    //   return state.double * 2;
+    // },
   }),
   {
     test({ firstName }) {},
@@ -27,9 +27,7 @@ setInterval(() => {
 
 export function Todos() {
   const pretextValues = todosPretext.usePretextFallout();
-  const { count, firstName, double, quadruple } = todosPretext.usePretextFallout();
-
-  console.log('pretextValues.double', pretextValues.double);
+  const { count, firstName } = todosPretext.usePretextFallout();
 
   return (
     <div>
@@ -38,8 +36,8 @@ export function Todos() {
         <h4>stuct</h4>
         <div>firstName: {pretextValues.firstName}</div>
         <div>count: {pretextValues.count}</div>
-        <div>double: {(pretextValues as any).double}</div>
-        <div>quadruple: {(pretextValues as any).quadruple}</div>
+        {/*<div>double: {(pretextValues as any).double}</div>*/}
+        {/*<div>quadruple: {(pretextValues as any).quadruple}</div>*/}
       </div>
       <div>
         <h4>destruct</h4>

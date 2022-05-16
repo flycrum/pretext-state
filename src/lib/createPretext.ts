@@ -1,7 +1,7 @@
 import { isFunction, NotFunction } from '../helpers/isFunction';
 
 import { Pretext } from './Pretext';
-import type { PretextConfigReducersT } from './reducers/reducerTypes';
+import type { PretextCreateZzzConfigZzzReducersT } from './reducers/reducerTypes';
 
 /**
  * Creates a chainable instance of Pretext.
@@ -17,7 +17,7 @@ export function createPretext<
     // limit state values to non-functions
     [Key in keyof PgpCreateState]: NotFunction<PgpCreateState[Key]>;
   },
-  PgpCreateReducers extends PretextConfigReducersT<PgpCreateState>
+  PgpCreateReducers extends PretextCreateZzzConfigZzzReducersT<PgpCreateState>
 >(
   pretextName: PgpCreateName,
   initialState?: PgpCreateState | (() => PgpCreateState),
