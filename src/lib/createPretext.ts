@@ -1,25 +1,31 @@
 import { isFunction, NotFunction } from '../helpers/isFunction';
 
 import { Pretext } from './Pretext';
-import type { PretextConfigReducersT } from './reducers/configReducerTypes';
+import type { PretextConfigReducersT } from './reducers/reducerTypes';
 
 /**
  * Creates a chainable instance of Pretext.
- * @param configName The pretext name used for identification, dev tools, etc.
- * @param configState The state data.
- * @param configReducers
+ * Initially, only name, state, and reducers can be set as that's the most basic/common set and anymore more gets substantially more complicated in terms of typings.
+ * @param pretextName The pretext name used for identification, dev tools, etc.
+ * @param initialState The initial state config or function to generate that state.
+ * @param reducers The initial reducers config or function to generate them.
  */
 export function createPretext<
   // these generic params used to enforce passed-in types and adhere to expected interface/type guardrails
-  CpName extends string,
-  CpState extends {
-    [Key in keyof CpState]: ((refs: { state: { [Key in keyof CpState]: unknown } }) => any) | NotFunction<CpState[Key]>;
+  PgpCreateName extends string,
+  PgpCreateState extends {
+    // limit state values to non-functions
+    [Key in keyof PgpCreateState]: NotFunction<PgpCreateState[Key]>;
   },
-  CpReducers extends PretextConfigReducersT<CpState>
->(configName: CpName, configState?: CpState | (() => CpState), configReducers?: CpReducers | (() => CpReducers)) {
-  return new Pretext<CpName, CpState, CpReducers>(
-    configName,
-    isFunction(configState) ? configState() : configState,
-    isFunction(configReducers) ? configReducers() : configReducers
+  PgpCreateReducers extends PretextConfigReducersT<PgpCreateState>
+>(
+  pretextName: PgpCreateName,
+  initialState?: PgpCreateState | (() => PgpCreateState),
+  reducers?: PgpCreateReducers | (() => PgpCreateReducers)
+) {
+  return new Pretext<PgpCreateName, PgpCreateState, PgpCreateReducers>(
+    pretextName,
+    isFunction(initialState) ? initialState() : initialState,
+    isFunction(reducers) ? reducers() : reducers
   );
 }

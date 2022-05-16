@@ -3,7 +3,7 @@ import type { Merge } from 'ts-toolbelt/out/Object/Merge';
 import { isFunction } from '../helpers/isFunction';
 
 import type { PretextAtomI } from './atoms/pretextAtomTypes';
-import type { PretextConfigReducersT } from './reducers/configReducerTypes';
+import type { PretextConfigReducersT } from './reducers/reducerTypes';
 import { processStateOrFnConfig } from './state/processStateOrFnConfig';
 
 /**
@@ -12,110 +12,110 @@ import { processStateOrFnConfig } from './state/processStateOrFnConfig';
  * Why is this a class? There are certain typing patterns that might be easier and cleaner to achieve this way.
  */
 export class Pretext<
-  CpConfigName extends string,
-  CpPretextConfigState extends object,
-  CpPretextConfigReducers extends PretextConfigReducersT<CpPretextConfigState>
+  PgpPretextName extends string,
+  PgpPretextState extends object,
+  PgpPretextReducers extends PretextConfigReducersT<PgpPretextState>
 > {
   /**
    * The pretext name used for identification, dev tools, etc.
    */
-  _configName: CpConfigName;
+  _name: PgpPretextName;
 
   /**
    * The reducer's configuration.
    * These functions are meant to be pure functions, predictable, and the only way to change state.
    */
-  _configReducers: CpPretextConfigReducers = {} as CpPretextConfigReducers;
+  _reducersConfig: PgpPretextReducers = {} as PgpPretextReducers;
 
   /**
    * The internal configuration state.
    * Each prop within this state object will be wrapped in a render-friendly and reactive atom.
    */
-  _configState: CpPretextConfigState = {} as CpPretextConfigState;
+  _stateConfig: PgpPretextState = {} as PgpPretextState;
 
   /**
-   * Each state prop as represented by individual atoms.
+   * Each state prop as represented by individual atoms generated from configs.
    */
-  _stateAtoms: { [Key in keyof CpPretextConfigState]: PretextAtomI<CpPretextConfigState[Key]> } = {} as any;
+  _stateAtoms: { [Key in keyof PgpPretextState]: PretextAtomI<PgpPretextState[Key]> } = {} as any;
 
   /**
    * Constructor.
-   * @param configName
-   * @param configState
-   * @param configReducer
+   * @param name
+   * @param stateConfig
+   * @param reducersConfig
    */
-  constructor(configName: CpConfigName, configState?: CpPretextConfigState, configReducer?: CpPretextConfigReducers) {
-    this._configName = configName;
-    this.configState(configState ?? this._configState);
-    this.configReducers(configReducer ?? this._configReducers);
+  constructor(name: PgpPretextName, stateConfig?: PgpPretextState, reducersConfig?: PgpPretextReducers) {
+    this._name = name;
+    this.setStateConfig(stateConfig ?? this._stateConfig);
+    this.setReducersConfig(reducersConfig ?? this._reducersConfig);
   }
 
   /**
-   * Sets the reducer's configuration.
+   * Merges additional reducer's configuration with any existing reducers.
    * @return The pretext shell enabling chaining.
    */
-  configReducers<CpReducers extends PretextConfigReducersT<CpPretextConfigState>>(
+  addMoreReducerConfigs<PgpAddReducers extends PretextConfigReducersT<PgpPretextState>>(
     // reducers: Reducers | ((refs: { utils: CpPretextUtils }) => Reducers) // todo utils
-    reducers: CpReducers | ((refs: { utils?: any }) => CpReducers)
+    reducers: PgpAddReducers | ((refs: { utils?: any }) => PgpAddReducers)
   ) {
-    this._configReducers = (isFunction(reducers)
-      ? reducers({ utils: {} }) // todo utils
-      : reducers) as any as CpPretextConfigReducers;
-
-    // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<CpConfigName, CpPretextConfigState, CpReducers>;
-  }
-
-  /**
-   * Merges additional reducer's configuration.
-   * @return The pretext shell enabling chaining.
-   */
-  configReducersPartial<CpReducers extends PretextConfigReducersT<CpPretextConfigState>>(
-    // reducers: Reducers | ((refs: { utils: CpPretextUtils }) => Reducers) // todo utils
-    reducers: CpReducers | ((refs: { utils?: any }) => CpReducers)
-  ) {
-    this._configReducers = {
-      ...this._configReducers,
+    this._reducersConfig = {
+      ...this._reducersConfig,
       ...(isFunction(reducers) ? reducers({ utils: {} }) : reducers), // todo utils
     };
 
     // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<CpConfigName, CpPretextConfigState, Merge<CpPretextConfigReducers, CpReducers>>;
+    return this as any as Pretext<PgpPretextName, PgpPretextState, Merge<PgpPretextReducers, PgpAddReducers>>;
   }
 
   /**
-   * Sets the internal state configuration.
-   * @param configStateOrFn A configuration object or function wrapper of properties representing pretext state.
-   * @return The pretext shell enabling chaining.
-   */
-  configState<CpState extends CpPretextConfigState>(configStateOrFn: CpState | (() => CpState)) {
-    const { configState, stateAtoms } = processStateOrFnConfig(configStateOrFn);
-
-    this._configState = configState;
-    this._stateAtoms = stateAtoms as any;
-
-    // return re-typed Pretext (with the latest config update) for chaining
-    return this as any as Pretext<CpConfigName, CpState, CpPretextConfigReducers>;
-  }
-
-  /**
-   * Merges additional internal state configuration.
+   * Merges additional state configuration with any existing state.
    * @param state An object of properties representing part of the internal pretext state.
    * @return The pretext shell enabling chaining.
    */
-  // configStatePartial<CpState extends object>(state: CpState | (() => CpState)) {
+  // addMoreStateConfigs<GpgAddState extends object>(stateOrFn: GpgAddState | (() => GpgAddState)) {
   //   this._configState = {
   //     ...this._configState,
-  //     ...(isFunction(state) ? state() : state),
+  //     ...(isFunction(stateOrFn) ? stateOrFn() : stateOrFn),
   //   };
   //
-  //   type MergedStateT = Merge<CpPretextConfigState, CpState>;
+  //   type MergedStateT = Merge<CpPretextConfigState, GpgAddState>;
   //   // todo - typings off...almost need to remap reducer records for new, merged state
   //   type ReducersT = Merge<CpPretextConfigReducers, PretextConfigReducersT<MergedStateT>>;
   //
   //   // return re-typed Pretext (with the latest config update) for chaining
   //   return this as any as Pretext<CpConfigName, MergedStateT, ReducersT>;
   // }
+
+  /**
+   * Sets the reducer's configuration (this will override existing state and typings).
+   * @return The pretext shell enabling chaining.
+   */
+  setReducersConfig<PgpSetReducers extends PretextConfigReducersT<PgpPretextState>>(
+    // reducers: Reducers | ((refs: { utils: CpPretextUtils }) => Reducers) // todo utils
+    reducers: PgpSetReducers | ((refs: { utils?: any }) => PgpSetReducers)
+  ) {
+    this._reducersConfig = (isFunction(reducers)
+      ? reducers({ utils: {} }) // todo utils
+      : reducers) as any as PgpPretextReducers;
+
+    // return re-typed Pretext (with the latest config update) for chaining
+    return this as any as Pretext<PgpPretextName, PgpPretextState, PgpSetReducers>;
+  }
+
+  /**
+   * Sets the internal state configuration (this will override existing state and typings).
+   * @param stateOrFn A configuration object or function wrapper of properties representing pretext state.
+   * @return The pretext shell enabling chaining.
+   */
+  setStateConfig<PgpSetState extends PgpPretextState>(stateOrFn: PgpSetState | (() => PgpSetState)) {
+    const { configState, stateAtoms } = processStateOrFnConfig(stateOrFn);
+
+    this._stateConfig = configState;
+    this._stateAtoms = stateAtoms as any;
+
+    // return re-typed Pretext (with the latest config update) for chaining
+    return this as any as Pretext<PgpPretextName, PgpSetState, PgpPretextReducers>;
+  }
 
   /**
    * Hook that gets the resulting pretext state, actions, etc.
@@ -131,7 +131,7 @@ export class Pretext<
       {},
       {
         get(_target, stateOrActionName: string) {
-          const statePropKey: keyof CpPretextConfigState = stateOrActionName as any;
+          const statePropKey: keyof PgpPretextState = stateOrActionName as any;
 
           // if ((actions as any)[stateOrActionName]) {
           //   return (actions as any)[stateOrActionName];
@@ -150,6 +150,6 @@ export class Pretext<
       }
     );
 
-    return proxyToDetectDestructuresAndBackfillWithHooksAccessingThoseStates as any as CpPretextConfigState;
+    return proxyToDetectDestructuresAndBackfillWithHooksAccessingThoseStates as any as PgpPretextState;
   }
 }

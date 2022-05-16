@@ -11,13 +11,13 @@ function generatePretextFactory() {
 const test = anyTest as TestInterface<ReturnType<typeof generatePretextFactory>>;
 
 test.beforeEach((t) => {
-  t.context = createPretext('F8P5E').configState(() => ({
+  t.context = createPretext('F8P5E').setStateConfig(() => ({
     firstName: 'jimmy',
   }));
 });
 
-// test('append more state via configStatePartial and ensure internal _config types and values are set correctly [EN5CW]', (t) => {
-//   const pretext = t.context.configStatePartial({
+// test(`append more state via addMoreStateConfigs and ensure internal config types and values are set correctly [EN5CW]`, (t) => {
+//   const pretext = t.context.addMoreStateConfigs({
 //     age: 99,
 //   });
 //

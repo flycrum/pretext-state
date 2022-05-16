@@ -1,26 +1,26 @@
 /**
  * Atom config used to generate the final atom wrapper object.
  */
-export interface PretextAtomConfigI<CpDefaultValue = any> {
-  initialValue: CpDefaultValue;
+export interface PretextAtomConfigI<PgpAtomInitialValue = any> {
+  initialValue: PgpAtomInitialValue;
 }
 
 /**
  * Wrapper interface that abstracts away the underlying atom engine (e.g. valtio, recoil).
  */
-export interface PretextAtomI<CpValueT = any> {
+export interface PretextAtomI<PgpAtomValue = any> {
   /**
    * The underlying atom reference that powers everything reactive.
    */
-  atomRef: { value: CpValueT };
+  atomRef: { value: PgpAtomValue };
   /**
    * Gets the dynamically updated value (this should always reflect the current value).
    */
-  getValue(): CpValueT;
+  getValue(): PgpAtomValue;
   /**
    * The initial or 'default' state value.
    */
-  initialValue: CpValueT;
+  initialValue: PgpAtomValue;
   /**
    * Unique id.
    */
@@ -29,36 +29,36 @@ export interface PretextAtomI<CpValueT = any> {
    * Updates the value either by passing in the new value or passing a function that includes last value.
    * @param value
    */
-  setValue(value: CpValueT | ((previousValue: CpValueT) => CpValueT)): void;
+  setValue(value: PgpAtomValue | ((previousValue: PgpAtomValue) => PgpAtomValue)): void;
   /**
    * Hook that gets its reactive value.
    */
-  useAtomValue: (thisScope: any) => CpValueT;
+  useAtomValue: (thisScope: any) => PgpAtomValue;
   /**
    * Static value that's not intended to be used directly because it's not directly reactive or automatically updated.
    */
-  valueStatic: CpValueT;
+  valueStatic: PgpAtomValue;
 }
 
 /**
  * Atom config used to generate the final atom wrapper object.
  */
-export interface PretextAtomComputedConfigI<CpDefaultValue = any> {
-  computedFn: (refs: { state: { [key: string]: any } }) => CpDefaultValue; // todo can we better type keys?
+export interface PretextAtomComputedConfigI<PgpInitialValue = any> {
+  computedFn: (refs: { state: { [key: string]: any } }) => PgpInitialValue; // todo can we better type keys?
 }
 
 /**
  * Wrapper interface that abstracts away the underlying derived/computed engine (e.g. valtio, recoil).
  */
-export interface PretextAtomComputedI<CpValueT = any> {
+export interface PretextAtomComputedI<PgpValue = any> {
   /**
    * The underlying atom reference that powers everything reactive.
    */
-  atomRef: { value: CpValueT };
+  atomRef: { value: PgpValue };
   /**
    * Gets the dynamically updated value (this should always reflect the current value).
    */
-  getValue(): CpValueT;
+  getValue(): PgpValue;
   /**
    * Unique id.
    */
@@ -66,7 +66,7 @@ export interface PretextAtomComputedI<CpValueT = any> {
   /**
    * Hook that gets its reactive value.
    */
-  useAtomValue: (thisScope: any) => CpValueT;
+  useAtomValue: (thisScope: any) => PgpValue;
   /**
    * Static value that's not intended to be used directly because it's not directly reactive or automatically updated.
    */
