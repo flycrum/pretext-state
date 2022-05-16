@@ -1,3 +1,5 @@
+import type { MergeFlat } from 'ts-toolbelt/out/Object/Merge';
+
 import { isFunction } from '../helpers/isFunction';
 
 import type { PretextAtomI } from './atoms/pretextAtomTypes';
@@ -70,7 +72,7 @@ export class PretextC<
     return this as any as PretextC<
       PgpPretextName,
       PgpPretextState,
-      PretextConfigReducersT<PgpPretextState, PgpPretextReducers & PgpAddReducers>
+      PretextConfigReducersT<PgpPretextState, MergeFlat<PgpPretextReducers, PgpAddReducers>>
     >;
   }
 
@@ -88,8 +90,8 @@ export class PretextC<
     // return re-typed Pretext (with the latest config update) for chaining
     return this as any as PretextC<
       PgpPretextName,
-      PgpPretextState & PgpAddState,
-      PretextConfigReducersT<PgpPretextState & PgpAddState, PgpPretextReducers>
+      MergeFlat<PgpPretextState, PgpAddState>,
+      PretextConfigReducersT<MergeFlat<PgpPretextState, PgpAddState>, PgpPretextReducers>
     >;
   }
 
