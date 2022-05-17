@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPretext } from 'pretext-state';
+import { RenderCounter } from '../components/RenderCounter';
 
 const todosPretext = createPretext(
   'todos',
@@ -35,6 +36,7 @@ export function Todos() {
 
   return (
     <div>
+      <RenderCounter />
       <h1>Todos</h1>
       <div>
         <h4>stuct</h4>
