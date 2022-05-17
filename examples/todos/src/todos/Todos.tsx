@@ -16,7 +16,11 @@ const todosPretext = createPretext(
     // },
   }),
   {
-    test({ firstName }) {},
+    inc(state, num: number) {
+      console.log('inc', state, num);
+      state.count += num;
+      state.firstName = 'changed name too';
+    },
   }
 );
 
@@ -45,6 +49,10 @@ export function Todos() {
         <div>count: {count}</div>
         {/*<div>double: {double}</div>*/}
         {/*<div>quadruple: {quadruple}</div>*/}
+      </div>
+      <div>
+        <h3>Inc count</h3>
+        <button onClick={() => todosPretext.actions.inc(2)}>Inc</button>
       </div>
     </div>
   );

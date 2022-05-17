@@ -3,7 +3,10 @@ import type { MergeFlat } from 'ts-toolbelt/out/Object/Merge';
 import { isFunction } from '../helpers/isFunction';
 
 import type { PretextAtomI } from './atoms/pretextAtomTypes';
-import type { PretextConfigReducersT } from './reducers/reducerTypes';
+import type { PretextActionsT } from './reducers/actionTypes';
+import { createActions } from './reducers/createActions';
+import type { PretextFinalReducersT } from './reducers/reducerTypes';
+import type { PretextCreateConfigReducersT } from './reducers/reducerTypes';
 import { processStateOrFnConfig } from './state/processStateOrFnConfig';
 
 /**
@@ -14,8 +17,17 @@ import { processStateOrFnConfig } from './state/processStateOrFnConfig';
 export class PretextC<
   PgpPretextName extends string,
   PgpPretextState extends object,
-  PgpPretextReducers extends PretextConfigReducersT<PgpPretextState>
+  PgpPretextReducers extends PretextCreateConfigReducersT<PgpPretextState>
 > {
+  /**
+   * Action dispatches matching the reducer calls (with modified signatures).
+   */
+  actions: PretextActionsT<PgpPretextState, PgpPretextReducers> = createActions<
+    PgpPretextName,
+    PgpPretextState,
+    PgpPretextReducers
+  >(this);
+
   /**
    * The pretext name used for identification, dev tools, etc.
    */
@@ -54,14 +66,20 @@ export class PretextC<
    * Merges additional reducer's configuration with any existing reducers.
    * @return The pretext shell enabling chaining.
    */
-  addMoreReducerConfigs<PgpAddReducers extends PretextConfigReducersT<PgpPretextState, any>>(
+  addMoreReducerConfigs<PgpAddReducers extends PretextCreateConfigReducersT<PgpPretextState>>(
     // reducers: Reducers | ((refs: { utils: CpPretextUtils }) => Reducers) // todo utils
     reducers: PgpAddReducers | ((refs: { utils?: any }) => PgpAddReducers)
   ) {
-    this._reducersConfig = {
+    // this._reducersConfig = Object.assign(
+    //   this._reducersConfig,
+    //   (isFunction(reducers) ? reducers({ utils: {} }) : reducers), // todo utils
+    // );
+    const reducersConfig = {
       ...this._reducersConfig,
       ...(isFunction(reducers) ? reducers({ utils: {} }) : reducers), // todo utils
     };
+
+    this._reducersConfig = reducersConfig;
 
     // inline types like this really screws up code hinting and insights
     // type MergedReducersT = Merge<PgpPretextReducers, PgpAddReducers>;
@@ -72,7 +90,7 @@ export class PretextC<
     return this as any as PretextC<
       PgpPretextName,
       PgpPretextState,
-      PretextConfigReducersT<PgpPretextState, MergeFlat<PgpPretextReducers, PgpAddReducers>>
+      PretextFinalReducersT<PgpPretextState, typeof reducersConfig>
     >;
   }
 
@@ -91,7 +109,7 @@ export class PretextC<
     return this as any as PretextC<
       PgpPretextName,
       MergeFlat<PgpPretextState, PgpAddState>,
-      PretextConfigReducersT<MergeFlat<PgpPretextState, PgpAddState>, PgpPretextReducers>
+      PretextFinalReducersT<MergeFlat<PgpPretextState, PgpAddState>, PgpPretextReducers>
     >;
   }
 
@@ -99,7 +117,7 @@ export class PretextC<
    * Sets the reducer's configuration (this will override existing state and typings).
    * @return The pretext shell enabling chaining.
    */
-  setReducersConfig<PgpSetReducers extends PretextConfigReducersT<PgpPretextState, PgpSetReducers>>(
+  setReducersConfig<PgpSetReducers extends PretextCreateConfigReducersT<PgpPretextState>>(
     // reducers: Reducers | ((refs: { utils: CpPretextUtils }) => Reducers) // todo utils
     reducers: PgpSetReducers | ((refs: { utils?: any }) => PgpSetReducers)
   ) {
@@ -111,7 +129,7 @@ export class PretextC<
     return this as any as PretextC<
       PgpPretextName,
       PgpPretextState,
-      PretextConfigReducersT<PgpPretextState, PgpPretextReducers & PgpSetReducers>
+      PretextFinalReducersT<PgpPretextState, PgpPretextReducers & PgpSetReducers>
     >;
   }
 

@@ -1,5 +1,4 @@
 # Todos
-- change Cp prefix to Gp
 - somehow prevent collision of state names, reducer names, util names, computed names, etc
 
 ## Testing

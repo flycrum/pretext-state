@@ -14,7 +14,7 @@ function generatePretextFactory() {
     {
       changeName: (state, newName: string) => {
         state.firstName = newName;
-        return newName; // return this here only as a means to test 'isNotAny' and ensure type is maintained
+        return state; // return this here only as a means to test 'isNotAny' and ensure type is maintained
       },
     }
   );
@@ -32,7 +32,7 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
       doubleName: (state) => {
         const { firstName } = state;
         state.firstName = `${firstName}-${firstName}`;
-        return state.firstName; // return this here only as a means to test 'isNotAny' and ensure type is maintained
+        return state; // return this here only as a means to test 'isNotAny' and ensure type is maintained
       },
     })
     .addMoreStateConfigs({
@@ -42,9 +42,11 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
       age: 0,
     }))
     .addMoreReducerConfigs({
-      clear: (state) => {
-        state.lastName = '';
-        state.firstName = '';
+      clear: (state, bypass: boolean) => {
+        if (!bypass) {
+          state.lastName = '';
+          state.firstName = '';
+        }
       },
     });
 
@@ -53,8 +55,13 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
   expectType<{ firstName: string }>(pretext._stateConfig);
   expectType<string>(pretext._stateConfig.firstName);
 
-  // pretext._reducersConfig.changeName({} as any, 'hello');
-  // pretext._reducersConfig.clear({} as any, 'hello');
+  pretext._reducersConfig.changeName({} as any, 'hello');
+  pretext._reducersConfig.clear({} as any, true);
+  // pretext._reducersConfig.clear({} as any, 'hello'); // should show error
+
+  pretext.actions.changeName('aaa');
+  pretext.actions.clear(true);
+  // pretext.actions.clear('aaa'); // should show error
 
   type NewExpectedStateT = { firstName: string; lastName: string; age: number };
 
@@ -63,7 +70,7 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
   expectType<{
     changeName(state: NewExpectedStateT, newName: string): void;
     doubleName(state: NewExpectedStateT): void;
-    clear(state: { firstName: string; lastName: string; age: number }): void;
+    clear(state: { firstName: string; lastName: string; age: number }, hmm: boolean): void;
   }>(pretext._reducersConfig);
   expectTypeParam0<NewExpectedStateT>(pretext._reducersConfig.changeName);
   expectTypeParam1<string>(pretext._reducersConfig.changeName);
@@ -72,7 +79,7 @@ test(`append more reducers via 'addMoreReducerConfigs' and ensure internal confi
   isNotAny(pretext._reducersConfig.doubleName({ firstName: '', lastName: '', age: 0 }));
   expectTypeParam0<NewExpectedStateT>(pretext._reducersConfig.clear);
   // expectTypeParam1<undefined>(pretext._reducersConfig.clear);
-  isNotAny(pretext._reducersConfig.clear({ firstName: '', lastName: '', age: 0 }));
+  isNotAny(pretext._reducersConfig.clear({ firstName: '', lastName: '', age: 0 }, true));
 
   t.is(pretext._stateConfig.firstName, 'javian'); // todo this should change once wired up
   t.is(Object.keys(pretext._reducersConfig).length, 3);
